@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>拍摄套餐 &amp; 价格明细 - 清柠摄影接单</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    background: #fcfbfb;
+    color: #111;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;      
+  padding: 24px 60px;    
+}
+
+.logo {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #fff;           
+  text-decoration: none;
+}
+
+.nav-links a {
+  margin-left: 28px;
+  font-size: 15px;
+  color: #fff;           
+  text-decoration: none;
+}
+
+.nav-links a:hover { color: #ff8fb2; }
+.nav-links a.active { color: #ff8fb2; font-weight: 600; }
+
+  /* ===== 页头标题 ===== */
+  .page-head {
+    text-align: center;
+  background: #181717;         /* 新增：这块区域变黑 */
+  color: #fff;              /* 新增：文字变白 */
+  padding: 40px 24px;
+  width: 100%;
+  }
+  .page-head h1 {
+    font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #fff;
+  }
+  .page-head p {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #fcfafa;
+  }
+  .page-head p b { color: #c0392b; font-weight: 600; }
+ 
+
+footer {
+  background: #111;        
+  color: #fff;             
+  padding: 28px 60px;
+  text-align: center;
+  font-size: 14px;
+}
+
+footer a {
+  color: #fcfafb;          
+  text-decoration: none;
+}
+
+footer a:hover { color: #fff; }
+
+
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+    max-width: 1200px;
+    margin: 36px auto 0;
+    padding: 0 32px;
+  }
+  .card {
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease; 
+    background: #fff;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    padding: 26px 24px 22px;
+    transition: box-shadow 0.3s;
+  }
+  .card:hover {
+     transform: translateY(-6px);
+     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); 
+    }
+  .card h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 16px;
+  }
+  .card ul { list-style: none; }
+  .card li {
+    font-size: 13px;
+    color: #555;
+    padding: 4px 0;
+    display: flex;
+    gap: 6px;
+  }
+  .card li::before { content: "√"; color: #ff8fb2; font-weight: 700; }
+  .card .prices { margin-top: 18px; padding-top: 14px; border-top: 1px dashed #eee; }
+  .card .prices div {
+    font-size: 15px;
+    font-weight: 700;
+    color: #c0392b;
+    line-height: 1.8;
+  }
+  .card .prices .new { color: #e67e22; font-weight: 600; }
+
+  .notice {
+    max-width: 1200px;
+    margin: 48px auto 72px;
+    padding: 0 32px;
+  }
+  .notice-box {
+    background: #fafafa;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    padding: 28px 32px;
+  }
+  .notice-box h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .notice-box h3 span { color: #c0392b; }
+  .notice-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 32px;
+  }
+  .notice-list p {
+    font-size: 13px;
+    color: #555;
+    padding: 4px 0;
+  }
+  .notice-list p b { color: #111; }
+  /* ===== 响应式 ===== */
+  @media (max-width: 1024px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    nav { padding: 14px 20px; }
+    .nav-links a { margin-left: 10px; font-size: 14px; padding: 12px 8px; }
+    .logo { padding: 10px 0; }
+    .card li, .notice-list p { font-size: 14px; }
+    .page-head h1 { font-size: 24px; }
+    .cards { grid-template-columns: 1fr; padding: 0 20px; }
+    .notice { padding: 0 20px; }
+    .notice-list { grid-template-columns: 1fr; }
+    .notice-box { padding: 20px; }
+  }
+  /* ===== 页中页 预约弹窗（模态框）===== */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.55);
+  display:none;align-items:center;justify-content:center;
+  z-index:999;
+}
+.modal-box{
+  background:#fff;border:2px solid #222;border-radius:10px;
+  width:min(520px,92vw);max-height:88vh;overflow-y:auto;padding:28px;
+}
+.modal-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:20px;
+}
+.modal-header h3{font-size:20px;}
+.modal-close{
+  border:none;background:none;font-size:28px;cursor:pointer;
+  line-height:1;color:#888;
+}
+.modal-close:hover{color:#222;}
+
+.form-row{margin-bottom:16px;}
+.form-row label{display:block;margin-bottom:6px;font-weight:500;font-size:15px;}
+.form-row input,.form-row select,.form-row textarea{
+  width:100%;padding:10px;border:1px solid #333;border-radius:5px;
+  font-size:15px;background:#fff;
+}
+.time-option{
+  display:inline-block;border:1px solid #333;border-radius:5px;
+  padding:8px 13px;margin:5px 5px 0 0;cursor:pointer;font-size:14px;
+}
+.time-option.active{background:#222;color:#fff;}
+.submit-btn{
+  width:100%;background:#222;color:#fff;border:none;
+  padding:13px;font-size:16px;border-radius:5px;cursor:pointer;margin-top:6px;
+}
+.submit-btn:hover{background:#444;}
+/* 卡片点击提示样式 */
+.card{
+  cursor:pointer;
+  transition:transform .15s, box-shadow .15s;
+}
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 8px 18px rgba(0,0,0,.10);
+}
+.book-tip{
+  margin-top:14px;font-size:13px;color:#999;text-align:center;
+  border:1px solid #ddd;border-radius:4px;padding:6px;
+}
+
+.day-selector{
+  margin-bottom:10px;
+}
+.day-btn{
+  padding:7px 14px;
+  margin-right:8px;
+  border:1px solid #333;
+  border-radius:5px;
+  background:#fff;
+  cursor:pointer;
+}
+.day-btn.active{
+  background:#222;
+  color:#fff;
+}
+.day-group{
+  display:none; /* 默认全部隐藏 */
+  margin:10px 0;
+}
+.time-option{
+  display:inline-block;border:1px solid #333;border-radius:5px;
+  padding:8px 13px;margin:5px 5px 0 0;cursor:pointer;font-size:14px;
+}
+.time-option.active{background:#222;color:#fff;}
+
+.day-selector{
+  margin-bottom:10px;
+}
+.day-btn{
+  padding:7px 14px;
+  margin-right:8px;
+  border:1px solid #333;
+  border-radius:5px;
+  background:#fff;
+  cursor:pointer;
+}
+.day-btn.active{
+  background:#222;
+  color:#fff;
+}
+.day-group{
+  display:none;
+  margin:10px 0;
+}
+.time-option{
+  display:inline-block;
+  border:1px solid #333;
+  border-radius:5px;
+  padding:8px 13px;
+  margin:5px 5px 0 0;
+  cursor:pointer;
+  font-size:14px;
+}
+/* 用户选中后变灰 */
+.time-option.active{
+  background:#aaaaaa;
+  color:#222;
+  border-color:#777;
+}
+/* 别人预定，更深的灰色，禁止点击 */
+.time-option.reserved{
+  background:#666666;
+  color:#ddd;
+  border-color:#444;
+  cursor:not-allowed;
+}
+
+
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">清柠摄影接单</a>
+  <div class="nav-links">
+    <a href="index.html">首页</a>
+  </div>
+</nav>
+
+<header class="page-head">
+  <h1>拍摄套餐 &amp; 价格明细</h1>
+  <p>所有套餐底片全送，无隐形消费 <b>|</b> 场照系列可自行搭配</p>
+</header>
+
+<main>
+
+  <section class="cards">
+
+    <article class="card" data-package="漫展精修场照">
+      <h2>【漫展精修场照】</h2>
+      <ul>
+        <li>暗调、亮调、灰调</li>
+        <li>全程动作表情引导</li>
+        <li>底片全返</li>
+        <li>精修4张</li>
+      </ul>
+      <div class="prices">
+        <div>¥25/张</div>
+        <div>¥100/4张</div>
+      </div>
+      <div class="book-tip">预约档期</div>
+    </article>
+
+    <article class="card" data-package="漫展特效场照">
+      <h2>【漫展特效场照】</h2>
+      <ul>
+        <li>暗调、亮调、灰调</li>
+        <li>全程动作表情引导</li>
+        <li>底片全返</li>
+        <li>精修4张特效</li>
+      </ul>
+      <div class="prices">
+        <div>¥55/张</div>
+        <div>¥220/4张</div>
+      </div>
+      <div class="book-tip">预约档期</div>
+    </article>
+
+    <article class="card" data-package="半合成场照">
+      <h2>【半合成场照】</h2>
+      <ul>
+        <li>1张半合成</li>
+        <li>1张特效</li>
+        <li>2张精修</li>
+        <li>全流程后期</li>
+      </ul>
+      <div class="prices">
+        <div>¥280/套</div>
+        <div class="new">新人：¥180/套</div>
+      </div>
+      <div class="book-tip">预约档期</div>
+    </article>
+
+    <article class="card" data-package="全合成场照">
+      <h2>【全合成场照】</h2>
+      <ul>
+        <li>1张全合成</li>
+        <li>1张特效</li>
+        <li>2张精修</li>
+        <li>全流程后期</li>
+      </ul>
+      <div class="prices">
+        <div>¥380/套</div>
+        <div class="new">新人：¥245/套</div>
+      </div>
+      <div class="book-tip">预约档期</div>
+    </article>
+
+   
+  </section>
+
+  <section class="notice">
+    <div class="notice-box">
+      <h3>拍摄须知（<span>必读</span>）</h3>
+      <div class="notice-list">
+        <p><b>1.</b> 场照定金30R、付定金选时间档期。尾款拍摄结束时支付。</p>
+        <p><b>2.</b> 漫展前半个月取消可退定金，正片如取消扣除30%定金。</p>
+        <p><b>3.</b> 因本人能力有限，暂时不接乙游、古耽角色，男扮女装根据角色来接。</p>
+        <p><b>4.</b> 返图时间为两个月内【精修1-3个工作日｜特效一周以内｜全合成一个月以内】。</p>
+        <p><b>5.</b> 底片全返，默认返JPG格式，如需要RAW格式请提前告知，百度网盘返原图。</p>
+        <p><b>6.</b> 一个动作拍摄完毕后，现场看图，满意后再进行下一个动作的拍摄，拒绝事后反悔。</p>
+        <p><b>7.</b> 拍摄时会录制第一人称视频，如有介意，请提前告知，付完尾款会删除。</p>
+        <p><b>8.</b> 如有其他需求或疑问，请随时与本人联系，并积极与摄影沟通。</p>
+        <p><b>9.</b> 请不要迟到，场照迟到20分钟视为跑单，因有事可提前告知并往后延申，正片迟到一小时视为跑单，因琐事取消的订单扣除30%定金。</p>
+        <p><b>10.</b> 单独约后期时，请提供该图片的RAW格式原图</p>
+    
+      </div>
+    </div>
+    
+  </section>
+
+</main>
+<!-- ====== 页中页 预约弹窗 ====== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>漫展拍摄预约</h3>
+      <button class="modal-close" id="closeModal">×</button>
+    </div>
+
+    <div class="form-row">
+      <label>① 选择漫展</label>
+      <select id="selectCon">
+        <option value="">-- 请选择漫展 --</option>
+        <option value="zzacg">郑州ACC动漫展</option>
+        <option value="zzacg">郑州梦乡动漫展</option>
+        <option value="xian">西安梦乡动漫展</option>
+        <option value="chengdu">成都世界线动漫展</option>
+        <option value="hangzhou">杭州梦乡动漫展</option>
+        <option value="chongqing">重庆梦乡动漫展</option>
+        <option value="wuhan">武汉梦乡动漫展</option>
+        <option value="changsha">长沙ACC动漫展</option>
+        <option value="shanghai">上海CJ动漫展</option>
+        <option value="shanghai">上海BW动漫展</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+  <label>② 选择拍摄时段</label>
+  <!-- 天数选择按钮 -->
+  <div class="day-selector">
+    <button class="day-btn" data-day="day1">day1</button>
+    <button class="day-btn" data-day="day2">day2</button>
+    <button class="day-btn" data-day="day3">day3</button>
+    <button class="day-btn" data-day="day4">day4</button>
+  </div>
+
+  <!-- 时段容器，默认全部隐藏 -->
+  <div id="timeBox">
+    <div class="day-group" data-group="day1">
+      <span class="time-option" data-val="day1 10:00">10:00</span>
+      <span class="time-option" data-val="day1 10:30">10:30</span>
+      <span class="time-option" data-val="day1 11:00">11:00</span>
+      <span class="time-option" data-val="day1 11:30">11:30</span>
+      <span class="time-option" data-val="day1 12:00">12:00</span>
+      <span class="time-option" data-val="day1 12:30">12:30</span>
+      <span class="time-option" data-val="day1 13:00">13:00</span>
+      <span class="time-option" data-val="day1 13:30">13:30</span>
+      <span class="time-option" data-val="day1 14:00">14:00</span>
+      <span class="time-option" data-val="day1 14:30">14:30</span>
+      <span class="time-option" data-val="day1 15:00">15:00</span>
+      <span class="time-option" data-val="day1 15:30">15:30</span>
+      <span class="time-option" data-val="day1 16:00">16:00</span>
+      <span class="time-option" data-val="day1 16:30">16:30</span>
+    </div>
+    <div class="day-group" data-group="day2">
+      <span class="time-option" data-val="day2 10:00">10:00</span>
+      <span class="time-option" data-val="day2 10:30">10:30</span>
+      <span class="time-option" data-val="day2 11:00">11:00</span>
+      <span class="time-option" data-val="day2 11:30">11:30</span>
+      <span class="time-option" data-val="day2 12:00">12:00</span>
+      <span class="time-option" data-val="day2 12:30">12:30</span>
+      <span class="time-option" data-val="day2 13:00">13:00</span>
+      <span class="time-option" data-val="day2 13:30">13:30</span>
+      <span class="time-option" data-val="day2 14:00">14:00</span>
+      <span class="time-option" data-val="day2 14:30">14:30</span>
+      <span class="time-option" data-val="day2 15:00">15:00</span>
+      <span class="time-option" data-val="day2 15:30">15:30</span>
+      <span class="time-option" data-val="day2 16:00">16:00</span>
+      <span class="time-option" data-val="day2 16:30">16:30</span>
+    </div>
+    <div class="day-group" data-group="day3">
+      <span class="time-option" data-val="day3 10:00">10:00</span>
+      <span class="time-option" data-val="day3 10:30">10:30</span>
+      <span class="time-option" data-val="day3 11:00">11:00</span>
+      <span class="time-option" data-val="day3 11:30">11:30</span>
+      <span class="time-option" data-val="day3 12:00">12:00</span>
+      <span class="time-option" data-val="day3 12:30">12:30</span>
+      <span class="time-option" data-val="day3 13:00">13:00</span>
+      <span class="time-option" data-val="day3 13:30">13:30</span>
+      <span class="time-option" data-val="day3 14:00">14:00</span>
+      <span class="time-option" data-val="day3 14:30">14:30</span>
+      <span class="time-option" data-val="day3 15:00">15:00</span>
+      <span class="time-option" data-val="day3 15:30">15:30</span>
+      <span class="time-option" data-val="day3 16:00">16:00</span>
+      <span class="time-option" data-val="day3 16:30">16:30</span>
+    </div>
+    <div class="day-group" data-group="day4">
+      <span class="time-option" data-val="day4 10:00">10:00</span>
+      <span class="time-option" data-val="day4 10:30">10:30</span>
+      <span class="time-option" data-val="day4 11:00">11:00</span>
+      <span class="time-option" data-val="day4 11:30">11:30</span>
+      <span class="time-option" data-val="day4 12:00">12:00</span>
+      <span class="time-option" data-val="day4 12:30">12:30</span>
+      <span class="time-option" data-val="day4 13:00">13:00</span>
+      <span class="time-option" data-val="day4 13:30">13:30</span>
+      <span class="time-option" data-val="day4 14:00">14:00</span>
+      <span class="time-option" data-val="day4 14:30">14:30</span>
+      <span class="time-option" data-val="day4 15:00">15:00</span>
+      <span class="time-option" data-val="day4 15:30">15:30</span>
+      <span class="time-option" data-val="day4 16:00">16:00</span>
+      <span class="time-option" data-val="day4 16:30">16:30</span>
+    </div>
+  </div>
+  <input type="hidden" id="selectedTime">
+</div>
+
+
+    <div class="form-row">
+      <label>③ 预定套餐（已自动带入）</label>
+      <input type="text" id="selectPackage" readonly>
+    </div>
+
+    <div class="form-row">
+      <label>④ 你的昵称 / CN</label>
+      <input type="text" id="cn" placeholder="填写cos圈CN">
+    </div>
+
+    <div class="form-row">
+      <label>⑤ 联系方式（微信|QQ）</label>
+      <input type="text" id="wx" placeholder="微信号，方便联系付定金">
+    </div>
+
+    <div class="form-row">
+      <label>备注：角色、需求等（选填）</label>
+      <textarea id="remark" rows="2" placeholder="例如：角色名称、是否需要引导、特殊需求"></textarea>
+    </div>
+
+    <button class="submit-btn" id="submitBtn">提交预约</button>
+  </div>
+</div>
+
+<footer>
+  <p>预约/QQ：706515449 V：qingyu28256 |接单群：868481814| 全程无隐形消费 · 底片全返 | 欢迎扩列</p>
+  <p><a href="index.html">返回首页</a></p>
+</footer>
+<script>
+// 页中页弹窗打开/关闭
+const overlay = document.getElementById("modalOverlay");
+const closeBtn = document.getElementById("closeModal");
+const packageInput = document.getElementById("selectPackage");
+// 页面初始化：清空套餐输入框，防止页面加载就出现undefined
+packageInput.value = "";
+
+// 点击任意套餐卡片 → 打开弹窗并自动填入套餐名
+document.querySelectorAll(".card").forEach(card=>{
+  card.addEventListener("click", ()=>{
+    // 读取data-package，不存在就设为空字符串，避免undefined
+    const pkgName = card.dataset.package || "";
+    packageInput.value = pkgName;
+    overlay.style.display = "flex";
+  });
+});
+
+// 关闭：右上角 ×
+closeBtn.onclick = ()=>{ overlay.style.display="none"; resetForm(); };
+// 关闭：点击黑色遮罩空白处
+overlay.addEventListener("click", e=>{
+  if(e.target === overlay){ overlay.style.display="none"; resetForm(); }
+});
+
+const timeItems = document.querySelectorAll(".time-option");
+const timeInput = document.getElementById("selectedTime");
+const dayBtns = document.querySelectorAll(".day-btn");
+const dayGroups = document.querySelectorAll(".day-group");
+
+// 别人预定好的档期，固定深灰
+let reservedList = ["day1 10:00","day1 11:00","day1 11:30","day1 13:00","day1 13:30","day1 14:00","day1 14:30",
+"day1 15:00","day1 15:30","day1 16:00","day1 16:30","day1 17:00","day2 10:00","day2 14:00","day2 14:30","day2 15:00","day3 13:00","day3 13:30"
+];
+
+// 四天独立存储选中记录
+let daySelectData = {
+  day1: [],
+  day2: [],
+  day3: [],
+  day4: []
+};
+let currentActiveDay = null;
+
+// 切换天数按钮
+dayBtns.forEach(btn=>{
+  btn.onclick = ()=>{
+    const targetDay = btn.dataset.day;
+    if(currentActiveDay){
+      saveCurrentDayStatus(currentActiveDay);
+    }
+
+    dayBtns.forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    currentActiveDay = targetDay;
+
+    dayGroups.forEach(group=>{
+      group.style.display = group.dataset.group === targetDay ? "block" : "none";
+    });
+
+    loadDayStatus(targetDay);
+  }
+});
+
+// 保存当前天选中状态
+function saveCurrentDayStatus(dayKey){
+  const selectedOfDay = [];
+  document.querySelectorAll(`.day-group[data-group="${dayKey}"] .time-option`).forEach(item=>{
+    const val = item.dataset.val;
+    if(item.classList.contains("active")){
+      selectedOfDay.push(val);
+    }
+  })
+  daySelectData[dayKey] = selectedOfDay;
+}
+
+// 加载某天状态
+function loadDayStatus(dayKey){
+  const savedList = daySelectData[dayKey];
+  document.querySelectorAll(`.day-group[data-group="${dayKey}"] .time-option`).forEach(item=>{
+    const val = item.dataset.val;
+    const originText = item.dataset.originText;
+    if(reservedList.includes(val)) return;
+
+    if(savedList.includes(val)){
+      item.classList.add("active");
+      item.innerText = originText + " ✅已选择";
+    }else{
+      item.classList.remove("active");
+      item.innerText = originText;
+    }
+  })
+  mergeAllSelectedToInput();
+}
+
+// 汇总全部选中时段到隐藏input
+function mergeAllSelectedToInput(){
+  let all = [];
+  Object.values(daySelectData).forEach(arr=> all = all.concat(arr));
+  timeInput.value = all.join("，");
+}
+
+timeItems.forEach(item=>{
+  const val = item.dataset.val;
+  const originText = item.innerText;
+  item.dataset.originText = originText;
+
+  if(reservedList.includes(val)){
+    item.classList.add("reserved");
+    item.innerText = originText + " 无";
+  }else{
+    item.onclick = ()=>{
+      const savedList = daySelectData[currentActiveDay];
+      const index = savedList.indexOf(val);
+      if(index > -1){
+        savedList.splice(index,1);
+        item.classList.remove("active");
+        item.innerText = originText;
+      }else{
+        savedList.push(val);
+        item.classList.add("active");
+        item.innerText = originText + " ✅已选择";
+      }
+      mergeAllSelectedToInput();
+    };
+  }
+});
+
+// 重置表单
+function resetForm(){
+  document.getElementById("selectCon").value = "";
+  showConDate.innerText = "";
+
+  daySelectData = {
+    day1: [],
+    day2: [],
+    day3: [],
+    day4: []
+  };
+  currentActiveDay = null;
+
+  timeItems.forEach(i=>{
+    const val = i.dataset.val;
+    if(!reservedList.includes(val)){
+      i.classList.remove("active");
+      i.innerText = i.dataset.originText;
+    }
+  });
+  timeInput.value = "";
+
+  dayBtns.forEach(b=>b.classList.remove("active"));
+  dayGroups.forEach(g=>g.style.display="none");
+
+  packageInput.value = "";
+  document.getElementById("cn").value = "";
+  document.getElementById("wx").value = "";
+  document.getElementById("remark").value = "";
+}
+
+
+
+
+
+// 提交预约
+document.getElementById("submitBtn").onclick = function(){
+  const conSel = document.getElementById("selectCon");
+  const con = conSel.value;
+  const time = timeInput.value;
+  const cn = document.getElementById("cn").value.trim();
+  const wx = document.getElementById("wx").value.trim();
+  const remark = document.getElementById("remark").value;
+
+  if(!con){ alert("请选择漫展"); return; }
+  if(!time){ alert("请选择拍摄时段"); return; }
+  if(!cn){ alert("请填写你的CN"); return; }
+  if(!wx){ alert("请填写微信联系方式"); return; }
+
+  alert(
+    "预约提交成功！\n\n" +
+    "漫展：" + conSel.options[conSel.selectedIndex].text + "\n" +
+    "时段：" + time + "\n" +
+    "套餐：" + packageInput.value + "\n" +
+    "CN：" + cn + "\n" +
+    "备注：" + (remark || "无") + "\n\n" +
+    "我会尽快微信联系你，收取30R定金锁定档期"
+  );
+       // ===== 提交后推送到个人微信（PushPlus）=====
+    fetch('https://www.pushplus.plus/send', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        token: '4b79901f69a94031b547ebbf5d8ddd4f',
+        title: '新漫展预约：' + cn,
+        content: '漫展：' + conSel.options[conSel.selectedIndex].text + '\n' +
+                 '时段：' + time + '\n' +
+                 '套餐：' + packageInput.value + '\n' +
+                 'CN：' + cn + '\n' +
+                 '微信/QQ：' + wx + '\n' +
+                 '备注：' + (remark || '无')
+      })
+    }).then(r => r.json()).then(res => console.log('推送结果:', res));
+
+
+  overlay.style.display = "none";
+  resetForm();
+};
+
+function resetForm(){
+  document.getElementById("selectCon").value = "";
+
+  // 清空四天所有选中记录
+  daySelectData = {
+    day1: [],
+    day2: [],
+    day3: [],
+    day4: []
+  };
+  currentActiveDay = null;
+
+  timeItems.forEach(i=>{
+    const val = i.dataset.val;
+    if(!reservedList.includes(val)){
+      i.classList.remove("active");
+      i.innerText = i.dataset.originText;
+    }
+  });
+  timeInput.value = "";
+
+  dayBtns.forEach(b=>b.classList.remove("active"));
+  dayGroups.forEach(g=>g.style.display="none");
+
+  packageInput.value = "";
+  document.getElementById("cn").value = "";
+  document.getElementById("wx").value = "";
+  document.getElementById("remark").value = "";
+}
+
+
+
+
+</script>
+
+
+</body>
+</html>
