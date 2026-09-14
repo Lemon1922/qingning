@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>拍摄套餐 &amp; 价格明细 - 清柠摄影接单</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    background: #fcfbfb;
+    color: #111;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;      
+  padding: 24px 60px;    
+}
+
+.logo {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #fff;           
+  text-decoration: none;
+}
+
+.nav-links a {
+  margin-left: 28px;
+  font-size: 15px;
+  color: #fff;           
+  text-decoration: none;
+}
+
+.nav-links a:hover { color: #ff8fb2; }
+.nav-links a.active { color: #ff8fb2; font-weight: 600; }
+
+  /* ===== 页头标题 ===== */
+  .page-head {
+    text-align: center;
+  background: #181717;         /* 新增：这块区域变黑 */
+  color: #fff;              /* 新增：文字变白 */
+  padding: 40px 24px;
+  width: 100%;
+  }
+  .page-head h1 {
+    font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #fff;
+  }
+  .page-head p {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #fcfafa;
+  }
+  .page-head p b { color: #c0392b; font-weight: 600; }
+ 
+
+footer {
+  background: #111;        
+  color: #fff;             
+  padding: 28px 60px;
+  text-align: center;
+  font-size: 14px;
+}
+
+footer a {
+  color: #fcfafb;          
+  text-decoration: none;
+}
+
+footer a:hover { color: #fff; }
+
+
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    max-width: 1200px;
+    margin: 36px auto 0;
+    padding: 0 32px;
+  }
+  .card {
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease; 
+    background: #fff;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    padding: 26px 24px 22px;
+    transition: box-shadow 0.3s;
+  }
+  .card:hover { 
+    transform: translateY(-6px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); }
+  .card h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 16px;
+  }
+  .card ul { list-style: none; }
+  .card li {
+    font-size: 13px;
+    color: #555;
+    padding: 4px 0;
+    display: flex;
+    gap: 6px;
+  }
+  .card li::before { content: "√"; color: #ff8fb2; font-weight: 700; }
+  .card .prices { margin-top: 18px; padding-top: 14px; border-top: 1px dashed #eee; }
+  .card .prices div {
+    font-size: 15px;
+    font-weight: 700;
+    color: #c0392b;
+    line-height: 1.8;
+  }
+  .card .prices .new { color: #e67e22; font-weight: 600; }
+
+  .notice {
+    max-width: 1200px;
+    margin: 48px auto 72px;
+    padding: 0 32px;
+  }
+  .notice-box {
+    background: #fafafa;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    padding: 28px 32px;
+  }
+  .notice-box h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .notice-box h3 span { color: #c0392b; }
+  .notice-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 32px;
+  }
+  .notice-list p {
+    font-size: 13px;
+    color: #555;
+    padding: 4px 0;
+  }
+  .notice-list p b { color: #111; }
+  /* ===== 响应式 ===== */
+  @media (max-width: 1024px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    nav { padding: 14px 20px; }
+    .nav-links a { margin-left: 10px; font-size: 14px; padding: 12px 8px; }
+    .logo { padding: 10px 0; }
+    .card li, .notice-list p { font-size: 14px; }
+    .page-head h1 { font-size: 24px; }
+    .cards { grid-template-columns: 1fr; padding: 0 20px; }
+    .notice { padding: 0 20px; }
+    .notice-list { grid-template-columns: 1fr; }
+    .notice-box { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">清柠摄影接单</a>
+  <div class="nav-links">
+    <a href="index.html">首页</a>
+  </div>
+</nav>
+
+<header class="page-head">
+  <h1>拍摄套餐 &amp; 价格明细</h1>
+  <p>所有套餐底片全送，无隐形消费 <b>|</b> 场照系列可自行搭配</p>
+</header>
+
+<main>
+
+  <section class="cards">
+
+    <article class="card">
+      <h2>【白棚拍摄】</h2>
+      <ul>
+        <li> 拍摄时长2h</li>
+        <li> 有拍摄策划</li>
+        <li> 氛围感、故事感、情绪风</li>
+        <li> 底片全返、精修9张</li>
+      </ul>
+      <div class="prices">
+        <div>单人：¥200/套</div>
+        <div>双人：¥300/套</div>
+      </div>
+    </article>
+
+    <article class="card">
+      <h2>【白棚创作】</h2>
+      <ul>
+        <li> 拍摄时长2h</li>
+        <li> 有拍摄策划+合成策划</li>
+        <li> 氛围感、故事感、情绪风</li>
+        <li> 底片全返、精修9张</li>
+      </ul>
+      <div class="prices">
+        <div>单人：¥300/套</div>
+        <div>双人：¥400/套</div>
+      </div>
+    </article>
+
+    <article class="card">
+      <h2>【置景棚拍摄】</h2>
+      <ul>
+        <li> 拍摄时长2h</li>
+        <li> 有拍摄策划</li>
+        <li> 氛围感、故事感、情绪风</li>
+        <li> 底片全返、精修9张</li>
+      </ul>
+      <div class="prices">
+        <div>单人：¥260/套</div>
+        <div>双人：¥350/套</div>
+      </div>
+    </article>
+
+  </section>
+
+  <section class="notice">
+    <div class="notice-box">
+      <h3>拍摄须知（<span>必读</span>）</h3>
+      <div class="notice-list">
+        <p><b>1.</b> 正片定金100R、付定金选时间档期。尾款拍摄结束时支付。</p>
+        <p><b>2.</b> 正片如取消扣除30%定金。</p>
+        <p><b>3.</b> 正片拍摄不限角色iP，熟悉的ip会优先考虑；不接团片。</p>
+        <p><b>4.</b> 返图时间为一周。</p>
+        <p><b>5.</b> 底片全返，默认返JPG格式，如需要RAW格式请提前告知，百度网盘返原图。</p>
+        <p><b>6.</b> 一个动作拍摄完毕后，现场看图，满意后再进行下一个动作的拍摄，拒绝事后反悔。</p>
+        <p><b>7.</b> 拍摄时会录制第一人称视频，如有介意，请提前告知，付完尾款会删除。</p>
+        <p><b>8.</b> 如有其他需求或疑问，请随时与本人联系，并积极与摄影沟通。</p>
+        <p><b>9.</b> 请不要迟到，正片迟到一小时视为跑单，因琐事取消的订单扣除30%定金。</p>
+        <p><b>10.</b> 路途遥远需报销打车路费</p>
+    
+      </div>
+    </div>
+  </section>
+
+</main>
+<footer>
+  <p>预约/QQ：706515449 V：qingyu28256 |接单群：868481814| 全程无隐形消费 · 底片全返 | 欢迎扩列</p>
+  <p><a href="index.html">返回首页</a></p>
+</footer>
+
+</body>
+</html>

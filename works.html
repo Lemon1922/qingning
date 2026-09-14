@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <link rel="stylesheet"href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>摄影作品展示 | 约拍作品集</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">清柠摄影接单</div>
+        <div class="nav-list">
+            <a href="index.html">首页</a>
+            <a href="works.html" class="active">例图展示</a>
+        </div>
+        <div class="menu-btn">☰</div>
+    </nav>
+
+    <section class="page-title">
+        <h1>例图展示</h1>
+        <p>每一组照片，都是独一份的温柔与质感｜更多风格私聊可看</p>
+        <p>📌 作品仅供参考，拍摄风格可根据客户需求定制</p>
+        <p>注意：所有图片仅供查看、禁止盗用、发现必将追究其责任</p>
+    </section>
+
+    <section class="works-list">
+        <div class="card-wrap">
+            <div class="work-card"> 
+                <img src="images/1.png" alt="精修场照">
+                <h3>亮 | 暗</h3>
+                <p>精修场照样图</p>
+            </div>
+            <div class="work-card">
+                <img src="images/2.jpg" alt="特效场照">
+                <h3>亮 | 暗 | 灰</h3>
+                <p>漫展特效样图</p>
+            </div>
+            <div class="work-card">
+                <img src="images/3.jpg" alt="合成场照">
+                <h3>半合成 | 全合成</h3>
+                <p>合成场照样图 | 16:9 | 2.35:1</p>
+            </div>
+            <div class="work-card">
+                <img src="images/5.jpg" alt="外景正片">
+                <h3>外景正片</h3>
+                <p>正片样图 | 氛围感、情绪风、故事感...</p>
+            </div>
+            <div class="work-card">
+                <img src="images/6.jpg" alt="棚拍正片">
+                <h3>棚拍正片</h3>
+                <p>正片样图 | CG感、氛围感、情绪风、故事感...</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>预约/QQ：706515449 V：qingyu28256 |接单群：868481814| 全程无隐形消费 · 底片全返 | 欢迎扩列</p>
+    </footer>
+    <script src="js/main.js"></script>
+
+    <!-- 弹窗相册遮罩层 -->
+<div class="photo-modal">
+    <span class="modal-close">×</span>
+    <span class="modal-prev">❮</span>
+    <span class="modal-next">❯</span>
+    <img class="modal-img" src="" alt="作品大图">
+    <div class="modal-caption"></div>
+</div>
+
+<style>
+.photo-modal{
+    display:none; 
+    position:fixed;
+    z-index:9999;
+    left:0;top:0;
+    width:100%;height:100%;
+    background:rgba(0,0,0,0.92);
+    align-items:center;
+    justify-content:center;
+}
+.photo-modal.active{
+    display:flex;
+}
+.modal-img{
+    max-width: 90%;     /* 最大宽度占窗口90%，左右留边 */
+    max-height: 90vh;   /* 最大高度占可视屏幕90%，上下留边 */
+    width: auto;        /* 宽度自动跟随原图比例 */
+    height: auto;       /* 高度自动跟随原图比例 */
+}
+.modal-close{
+    position:absolute;
+    top:20px;
+    right:35px;
+    color:#fff;
+    font-size:40px;
+    cursor:pointer;
+}
+.modal-prev,.modal-next{
+    position:absolute;
+    color:#fff;
+    font-size:40px;
+    cursor:pointer;
+    padding:15px;
+}
+.modal-prev{left:20px;}
+.modal-next{right:20px;}
+.modal-caption{
+    position:absolute;
+    bottom:20px;
+    color:#ddd;
+}
+</style>
+
+<script>
+const modal = document.querySelector('.photo-modal');
+const modalImg = document.querySelector('.modal-img');
+const captionText = document.querySelector('.modal-caption');
+const closeBtn = document.querySelector('.modal-close');
+const prevBtn = document.querySelector('.modal-prev');
+const nextBtn = document.querySelector('.modal-next');
+
+let currentGroupImages = [];
+let currentIndex = 0;
+
+document.querySelectorAll('.work-card').forEach(card=>{
+    card.addEventListener('click',()=>{
+        currentGroupImages = card.dataset.images.split(',');
+        currentIndex = 0;
+        showImage();
+        modal.classList.add('active');
+    })
+})
+function showImage(){
+    modalImg.src = currentGroupImages[currentIndex];
+    captionText.innerText = `${currentIndex+1} / ${currentGroupImages.length}`;
+}
+
+prevBtn.onclick = function(){
+    currentIndex = (currentIndex -1 + currentGroupImages.length) % currentGroupImages.length;
+    showImage();
+}
+nextBtn.onclick = function(){
+    currentIndex = (currentIndex +1) % currentGroupImages.length;
+    showImage();
+}
+closeBtn.onclick = function(){
+    modal.classList.remove('active');
+}
+modal.addEventListener('click',(e)=>{
+    if(e.target === modal){
+        modal.classList.remove('active');
+    }
+})
+document.addEventListener('keydown',(e)=>{
+    if(!modal.classList.contains('active')) return;
+    if(e.key === 'Escape') modal.classList.remove('active');
+    if(e.key === 'ArrowLeft'){
+        currentIndex = (currentIndex -1 + currentGroupImages.length) % currentGroupImages.length;
+        showImage();
+    }
+    if(e.key === 'ArrowRight'){
+        currentIndex = (currentIndex +1) % currentGroupImages.length;
+        showImage();
+    }
+})
+</script>
+
+</body>
+</html>
